@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>ZEROX ADMIN PANEL</title>
+<style>
+  :root {
+    --bg: #070405;
+    --bg-grad: radial-gradient(circle at 50% 0%, rgba(255, 25, 25, 0.22), transparent 45%), linear-gradient(160deg, #130406 0%, #070405 55%, #0e0305 100%);
+    --panel: rgba(15, 7, 10, 0.95);
+    --card: rgba(24, 10, 14, 0.96);
+    --input-bg: #0c0507;
+    --border: rgba(255, 36, 36, 0.48);
+    --neon: #ff2424;
+    --text: #ffffff;
+    --muted: #bdb2b5;
+    --ok: #4cff88;
+    --warn: #ffbe3b;
+  }
+
+  body.light-theme {
+    --bg: #f4f6f9;
+    --bg-grad: linear-gradient(160deg, #ffffff 0%, #f1f4f8 60%, #e9eef5 100%);
+    --panel: #ffffff;
+    --card: #f8fafc;
+    --input-bg: #ffffff;
+    --border: #d0d7de;
+    --neon: #d91b1b;
+    --text: #111827;
+    --muted: #4b5563;
+    --ok: #0f9d58;
+    --warn: #b45309;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background: var(--bg-grad);
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    min-height: 100vh;
+    padding-bottom: 42px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .container {
+    max-width: 660px;
+    margin: 0 auto;
+    padding: 13px;
+  }
+
+  .auth-screen {
+    max-width: 440px;
+    margin: 36px auto;
+    background: var(--panel);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+  }
+
+  .topbar {
+    background: var(--panel);
+    border: 1.5px solid var(--border);
+    border-radius: 15px;
+    padding: 14px;
+    margin-bottom: 13px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.14);
+  }
+
+  .topbar-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .brand-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .brand-img {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 1.5px solid var(--neon);
+    background: var(--card);
+    display: none;
+  }
+
+  .brand-img.visible {
+    display: block;
+  }
+
+  .brand {
+    font-size: 20px;
+    font-weight: 900;
+    font-style: italic;
+    letter-spacing: 1px;
+    color: var(--text);
+  }
+
+  .brand span {
+    color: var(--neon);
+  }
+
+  .db-badge {
+    font-size: 12px;
+    font-weight: 800;
+    padding: 6px 11px;
+    border-radius: 999px;
+    background: rgba(76, 255, 136, 0.12);
+    border: 1px solid rgba(76, 255, 136, 0.45);
+    color: var(--ok);
+  }
+
+  .popup-triggers {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 7px;
+    margin-top: 12px;
+  }
+
+  .btn-pop {
+    min-height: 44px;
+    padding: 8px 8px;
+    border-radius: 10px;
+    border: 1.2px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .btn-pop:active {
+    transform: scale(0.98);
+  }
+
+  .nav-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 13px;
+  }
+
+  .nav-btn {
+    height: 46px;
+    border-radius: 11px;
+    border: 1.2px solid var(--border);
+    background: var(--panel);
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+
+  .nav-btn.active {
+    background: linear-gradient(90deg, #a80c0c, #ff2222);
+    border-color: #ff4d4d;
+    color: #ffffff;
+    box-shadow: 0 4px 16px rgba(255, 30, 30, 0.32);
+  }
+
+  .section {
+    display: none;
+  }
+
+  .section.active {
+    display: block;
+  }
+
+  .card {
+    background: var(--panel);
+    border: 1.5px solid var(--border);
+    border-radius: 15px;
+    padding: 15px;
+    margin-bottom: 13px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--neon);
+    margin-bottom: 12px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .stat-box {
+    background: var(--card);
+    border: 1.2px solid var(--border);
+    border-radius: 12px;
+    padding: 13px;
+  }
+
+  .stat-label {
+    font-size: 11.5px;
+    color: var(--muted);
+    font-weight: 800;
+  }
+
+  .stat-num {
+    font-size: 25px;
+    font-weight: 900;
+    margin-top: 4px;
+    color: var(--text);
+  }
+
+  .stat-num.red { color: var(--neon); }
+  .stat-num.green { color: var(--ok); }
+  .stat-num.gold { color: var(--warn); }
+
+  .form-group {
+    margin-bottom: 12px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--muted);
+    margin-bottom: 5px;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    min-height: 44px;
+    background: var(--input-bg);
+    border: 1.2px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    color: var(--text);
+    font-size: 14px;
+    outline: none;
+  }
+
+  textarea {
+    min-height: 70px;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--neon);
+  }
+
+  .row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .btn-primary {
+    width: 100%;
+    height: 48px;
+    border: none;
+    border-radius: 11px;
+    background: linear-gradient(90deg, #b50c0c, #ff2020);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 0.8px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(255, 25, 25, 0.28);
+  }
+
+  .btn-primary:active {
+    transform: scale(0.99);
+  }
+
+  .btn-sm {
+    min-height: 36px;
+    padding: 6px 12px;
+    border-radius: 9px;
+    border: 1.2px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .btn-sm.danger {
+    background: rgba(255, 25, 25, 0.18);
+    border-color: #ff3b30;
+    color: #ff4d4d;
+  }
+
+  .item-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .item-row {
+    background: var(--card);
+    border: 1.2px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 13px;
+  }
+
+  .item-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+  }
+
+  .item-title {
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--text);
+    word-break: break-all;
+  }
+
+  .tag {
+    font-size: 11px;
+    font-weight: 900;
+    padding: 3px 9px;
+    border-radius: 7px;
+    white-space: nowrap;
+  }
+
+  .tag.on {
+    background: rgba(76, 255, 136, 0.16);
+    color: var(--ok);
+  }
+
+  .tag.off {
+    background: rgba(255, 59, 48, 0.18);
+    color: #ff4d4d;
+  }
+
+  .tag.info {
+    background: rgba(255, 190, 59, 0.16);
+    color: var(--warn);
+  }
+
+  .item-meta {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+    word-break: break-all;
+  }
+
+  .device-box {
+    margin-top: 8px;
+    padding: 9px 10px;
+    border-radius: 9px;
+    border: 1px dashed var(--border);
+    background: var(--input-bg);
+    font-size: 11.5px;
+    line-height: 1.55;
+    color: var(--text);
+  }
+
+  .device-line {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(150, 150, 150, 0.14);
+  }
+
+  .device-line:last-child {
+    border-bottom: none;
+  }
+
+  .item-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  .switch-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 48px;
+    background: var(--card);
+    border: 1.2px solid var(--border);
+    border-radius: 11px;
+    padding: 10px 13px;
+    margin-bottom: 11px;
+  }
+
+  .switch-line span {
+    font-size: 13.5px;
+    font-weight: 800;
+  }
+
+  .switch-line input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    min-height: 22px;
+    accent-color: #ff2424;
+  }
+
+  .uid-box {
+    background: var(--card);
+    border: 1.5px solid var(--neon);
+    border-radius: 11px;
+    padding: 12px;
+    margin-bottom: 12px;
+    word-break: break-all;
+    font-family: monospace;
+    font-size: 13.5px;
+    font-weight: 800;
+    color: var(--ok);
+  }
+
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.72);
+    z-index: 99;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+  }
+
+  .modal-backdrop.open {
+    display: flex;
+  }
+
+  .modal-box {
+    width: 100%;
+    max-width: 450px;
+    background: var(--panel);
+    border: 1.5px solid var(--neon);
+    border-radius: 15px;
+    padding: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    max-height: 88vh;
+    overflow-y: auto;
+  }
+
+  .modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 13px;
+  }
+
+  .modal-title {
+    font-size: 15px;
+    font-weight: 900;
+    color: var(--neon);
+  }
+
+  .btn-close-modal {
+    min-height: 36px;
+    background: var(--card);
+    border: 1.2px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .logo-preview-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 12px;
+  }
+
+  .logo-preview-img {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    object-fit: cover;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--panel);
+    border: 1.5px solid var(--neon);
+    color: var(--text);
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 800;
+    z-index: 200;
+    display: none;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  }
+</style>
+</head>
+<body>
+
+  <!-- AUTH SCREEN -->
+  <div id="authScreen" class="auth-screen">
+    <div class="topbar-head" style="margin-bottom: 14px;">
+      <div class="brand">ZEROX <span>AUTH</span></div>
+      <button id="themeToggleAuthBtn" class="btn-sm" type="button" onclick="toggleAndSaveTheme()">White Theme</button>
+    </div>
+
+    <div id="registerBox" style="display:none;">
+      <div class="card-title">First Time Admin Registration</div>
+      <div class="item-meta" style="margin-bottom:12px;">
+        Create your admin email and password once. After registration, your UID will appear with a Copy button.
+      </div>
+      <div class="form-group">
+        <label>Admin Email</label>
+        <input id="regEmail" type="email" placeholder="admin@example.com" />
+      </div>
+      <div class="form-group">
+        <label>Admin Password (min 6 chars)</label>
+        <input id="regPassword" type="password" placeholder="Enter strong password" />
+      </div>
+      <button class="btn-primary" type="button" onclick="registerFirstAdmin()">REGISTER ADMIN</button>
+    </div>
+
+    <div id="uidShowBox" style="display:none;">
+      <div class="card-title">Registration Complete — Your UID</div>
+      <div class="item-meta" style="margin-bottom:10px;">
+        Copy this UID and put it into your Firebase Realtime Database Security Rules.
+      </div>
+      <div id="createdUidText" class="uid-box">-</div>
+      <div class="row-2" style="margin-bottom:10px;">
+        <button class="btn-sm" type="button" onclick="copyCreatedUid()">COPY UID</button>
+        <button class="btn-primary" type="button" onclick="proceedToMainPanel()">CONTINUE TO MAIN PAGE</button>
+      </div>
+    </div>
+
+    <div id="loginBox" style="display:none;">
+      <div class="card-title">Admin Login</div>
+      <div class="form-group">
+        <label>Admin Email</label>
+        <input id="loginEmail" type="email" placeholder="admin@example.com" />
+      </div>
+      <div class="form-group">
+        <label>Admin Password</label>
+        <input id="loginPassword" type="password" placeholder="Enter password" />
+      </div>
+      <button class="btn-primary" type="button" onclick="loginAdmin()">LOGIN TO ADMIN</button>
+    </div>
+  </div>
+
+  <!-- MAIN ADMIN PANEL -->
+  <div id="mainAdminContainer" class="container" style="display:none;">
+    <div class="topbar">
+      <div class="topbar-head">
+        <div class="brand-wrap">
+          <img id="headerLogoImg" class="brand-img" src="" alt="Logo" />
+          <div class="brand">ZEROX <span>ADMIN</span></div>
+        </div>
+        <div id="dbStatus" class="db-badge">CONNECTING...</div>
+      </div>
+
+      <div class="popup-triggers">
+        <button class="btn-pop" type="button" onclick="openModal('brandModal')">Logo &amp; Brand</button>
+        <button class="btn-pop" type="button" onclick="openModal('adsModal')">Ads &amp; Links</button>
+        <button id="themeToggleTopBtn" class="btn-pop" type="button" onclick="toggleAndSaveTheme()">White Theme</button>
+        <button class="btn-pop" type="button" onclick="logoutAdmin()">Logout</button>
+      </div>
+    </div>
+
+    <div class="nav-tabs">
+      <button class="nav-btn active" type="button" onclick="switchPage('home', this)">HOME</button>
+      <button class="nav-btn" type="button" onclick="switchPage('keys', this)">KEYS</button>
+      <button class="nav-btn" type="button" onclick="switchPage('mods', this)">MODS</button>
+      <button class="nav-btn" type="button" onclick="switchPage('update', this)">UPDATE</button>
+    </div>
+
+    <!-- 1. HOME DASHBOARD -->
+    <div id="page-home" class="section active">
+      <div class="card">
+        <div class="card-title">Key &amp; Live Device Overview</div>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-label">TOTAL KEYS</div>
+            <div id="statTotalKeys" class="stat-num">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">ONLINE DEVICES NOW</div>
+            <div id="statOnlineDevices" class="stat-num green">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">USED KEYS</div>
+            <div id="statUsedKeys" class="stat-num gold">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">FLOATING MODS</div>
+            <div id="statTotalMods" class="stat-num red">0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Used Keys Log (Device Name, IP, Version, Usage Time &amp; Online)</div>
+        <div id="homeTimingList" class="item-list">
+          <div class="item-meta">Loading used keys...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. KEYS MANAGER -->
+    <div id="page-keys" class="section">
+      <div class="card">
+        <div class="card-title">Create / Edit Key</div>
+        <input id="editingOriginalKey" type="hidden" value="" />
+        <div class="form-group">
+          <label>Key Code</label>
+          <input id="keyInputCode" type="text" placeholder="e.g. ZEROX-VIP-01" />
+        </div>
+        <div class="form-group">
+          <label>Username (Optional)</label>
+          <input id="keyInputUser" type="text" placeholder="e.g. player01" />
+        </div>
+        <div class="row-2">
+          <div class="form-group">
+            <label>Duration Value</label>
+            <input id="keyDurVal" type="number" min="1" value="7" />
+          </div>
+          <div class="form-group">
+            <label>Duration Unit</label>
+            <select id="keyDurUnit">
+              <option value="minutes">Minutes</option>
+              <option value="hours">Hours</option>
+              <option value="days" selected>Days</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Max Devices Allowed (1 = Single Device, 5 = First 5 Devices)</label>
+          <input id="keyMaxDevices" type="number" min="1" max="100" value="1" />
+        </div>
+        <div class="row-2">
+          <button class="btn-primary" type="button" onclick="saveKey()">SAVE KEY</button>
+          <button class="btn-sm" type="button" style="height:48px;" onclick="clearKeyForm()">CLEAR FORM</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">All Keys &amp; Connected Devices</div>
+        <div id="keysList" class="item-list"></div>
+      </div>
+    </div>
+
+    <!-- 3. FLOATING MODS MANAGER -->
+    <div id="page-mods" class="section">
+      <div class="card">
+        <div class="card-title">Add / Edit Floating Button (zerox)</div>
+        <div class="form-group">
+          <label>Button ID (e.g. btn_1)</label>
+          <input id="modId" type="text" placeholder="btn_1" />
+        </div>
+        <div class="form-group">
+          <label>Button Name</label>
+          <input id="modName" type="text" placeholder="AIMBOT CONFIG" />
+        </div>
+        <div class="form-group">
+          <label>GitHub Raw File / ZIP URL (or .json manifest)</label>
+          <input id="modRawUrl" type="text" placeholder="https://raw.githubusercontent.com/user/repo/main/file.zip" />
+        </div>
+        <div class="form-group">
+          <label>Target Path (Root Paste / Replace)</label>
+          <input id="modTargetPath" type="text" placeholder="/data/local/tmp/zerox_mods" />
+        </div>
+        <div class="form-group">
+          <label>Delete Files on OFF (comma separated)</label>
+          <input id="modDeleteFiles" type="text" placeholder="file.bin, extra.tmp" />
+        </div>
+        <button class="btn-primary" type="button" onclick="saveModButton()">SAVE MOD BUTTON</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Floating Buttons List</div>
+        <div id="modsList" class="item-list"></div>
+      </div>
+    </div>
+
+    <!-- 4. UPDATE MANAGER -->
+    <div id="page-update" class="section">
+      <div class="card">
+        <div class="card-title">App Update Control</div>
+        <div class="switch-line">
+          <span>Enable Update Popup</span>
+          <input id="updEnabled" type="checkbox" />
+        </div>
+        <div class="switch-line">
+          <span>Force Update (Block Login)</span>
+          <input id="updForce" type="checkbox" checked />
+        </div>
+        <div class="form-group">
+          <label>Update Title</label>
+          <input id="updTitle" type="text" placeholder="NEW UPDATE AVAILABLE" />
+        </div>
+        <div class="form-group">
+          <label>Update Reason / Note</label>
+          <textarea id="updReason" rows="2" placeholder="New features and bug fixes."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Update Download URL</label>
+          <input id="updUrl" type="text" placeholder="https://example.com/update.apk" />
+        </div>
+        <button class="btn-primary" type="button" onclick="saveUpdateConfig()">SAVE UPDATE SETTINGS</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP 1: LOGO URL / BRAND / DEVELOPER -->
+  <div id="brandModal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div class="modal-title">LOGO URL, BRAND &amp; DEVELOPER</div>
+        <button class="btn-close-modal" type="button" onclick="closeModal('brandModal')">CLOSE</button>
+      </div>
+
+      <div class="logo-preview-box">
+        <img id="modalLogoPreview" class="logo-preview-img" src="" alt="Preview" />
+        <div class="item-meta">App Logo Image Preview (from URL)</div>
+      </div>
+
+      <div class="form-group">
+        <label>App Logo Image URL</label>
+        <input id="cfgLogoUrl" type="url" placeholder="https://i.ibb.co/example/logo.png" oninput="updateLogoPreview()" />
+      </div>
+      <div class="form-group">
+        <label>App / Panel Logo Title Text</label>
+        <input id="cfgLogoText" type="text" placeholder="ZEROX PANEL" />
+      </div>
+      <div class="form-group">
+        <label>Login Sub Title</label>
+        <input id="cfgSubTitle" type="text" placeholder="FREE FIRE MOD MENU" />
+      </div>
+      <div class="form-group">
+        <label>Developer Name (Floating Info)</label>
+        <input id="cfgDeveloper" type="text" placeholder="DEV.ZEROXx" />
+      </div>
+      <div class="switch-line">
+        <span>Device Lock Enabled</span>
+        <input id="cfgDeviceLock" type="checkbox" checked />
+      </div>
+      <button class="btn-primary" type="button" onclick="saveBrandPopup()">SAVE LOGO &amp; BRAND</button>
+    </div>
+  </div>
+
+  <!-- POPUP 2: ADS SWITCH & LINKS -->
+  <div id="adsModal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div class="modal-title">ADS SWITCH &amp; LINKS</div>
+        <button class="btn-close-modal" type="button" onclick="closeModal('adsModal')">CLOSE</button>
+      </div>
+      <div class="switch-line">
+        <span>Ads Enabled Switch</span>
+        <input id="cfgAdsEnabled" type="checkbox" />
+      </div>
+      <div class="form-group">
+        <label>Ad / Shortlink / Promo URL</label>
+        <input id="cfgAdsUrl" type="text" placeholder="https://t.me/DEV_ZEROXx" />
+      </div>
+      <div class="form-group">
+        <label>Telegram Support Link</label>
+        <input id="cfgTelegramUrl" type="text" placeholder="https://t.me/DEV_ZEROXx" />
+      </div>
+      <button class="btn-primary" type="button" onclick="saveAdsPopup()">SAVE ADS &amp; LINKS</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+    apiKey: "AIzaSyDtmRBkcwvx1HrlIiqMAXnHqz5zGnAa978",
+    authDomain: "faizan11cc.firebaseapp.com",
+    databaseURL: "https://faizan11cc-default-rtdb.firebaseio.com",
+    projectId: "faizan11cc",
+    storageBucket: "faizan11cc.firebasestorage.app",
+    messagingSenderId: "188594125460",
+    appId: "1:188594125460:web:9fe3df633490cf079b5281",
+    measurementId: "G-CF16VT8K6V"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    const THEME_STORAGE_KEY = "zerox_admin_theme_mode";
+    const REG_LOCK_KEY = "zerox_admin_registered_locked_v2";
+    const PENDING_UID_KEY = "zerox_admin_pending_uid_v2";
+    const ONLINE_WINDOW_MS = 65000;
+
+    let keysCache = {};
+    let modsCache = {};
+    let dbListenersAttached = false;
+    let remoteRegisteredFlag = false;
+
+    function applyThemeMode(mode, showMsg) {
+      const isWhite = (mode === "white");
+      document.body.classList.toggle("light-theme", isWhite);
+      const label = isWhite ? "Neon Dark Theme" : "White Theme";
+      const topBtn = document.getElementById("themeToggleTopBtn");
+      const authBtn = document.getElementById("themeToggleAuthBtn");
+      if (topBtn) topBtn.textContent = label;
+      if (authBtn) authBtn.textContent = label;
+      try { localStorage.setItem(THEME_STORAGE_KEY, isWhite ? "white" : "dark"); } catch (e) {}
+      if (showMsg) showToast(isWhite ? "White Theme Saved!" : "Neon Dark Theme Saved!");
+    }
+
+    function toggleAndSaveTheme() {
+      const current = localStorage.getItem(THEME_STORAGE_KEY) || "dark";
+      applyThemeMode(current === "white" ? "dark" : "white", true);
+    }
+
+    (function initSavedTheme() {
+      let saved = "dark";
+      try { saved = localStorage.getItem(THEME_STORAGE_KEY) || "dark"; } catch (e) {}
+      applyThemeMode(saved, false);
+    })();
+
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.style.display = "block";
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => { t.style.display = "none"; }, 2400);
+    }
+
+    function isLocalRegLocked() {
+      try { return localStorage.getItem(REG_LOCK_KEY) === "1"; } catch (e) { return false; }
+    }
+
+    function setLocalRegLocked() {
+      try { localStorage.setItem(REG_LOCK_KEY, "1"); } catch (e) {}
+    }
+
+    function isAnyRegLocked() {
+      return remoteRegisteredFlag || isLocalRegLocked();
+    }
+
+    function getPendingUid() {
+      try { return localStorage.getItem(PENDING_UID_KEY) || ""; } catch (e) { return ""; }
+    }
+
+    function setPendingUid(uid) {
+      try {
+        if (uid) localStorage.setItem(PENDING_UID_KEY, uid);
+        else localStorage.removeItem(PENDING_UID_KEY);
+      } catch (e) {}
+    }
+
+    function showAuthView(mode, uidVal) {
+      document.getElementById("mainAdminContainer").style.display = "none";
+      document.getElementById("authScreen").style.display = "block";
+      document.getElementById("registerBox").style.display = mode === "register" ? "block" : "none";
+      document.getElementById("uidShowBox").style.display = mode === "uid" ? "block" : "none";
+      document.getElementById("loginBox").style.display = mode === "login" ? "block" : "none";
+      if (uidVal) {
+        document.getElementById("createdUidText").textContent = uidVal;
+      }
+    }
+
+    function showMainPanel() {
+      setPendingUid("");
+      setLocalRegLocked();
+      document.getElementById("authScreen").style.display = "none";
+      document.getElementById("mainAdminContainer").style.display = "block";
+      attachDatabaseListenersOnce();
+    }
+
+    window.addEventListener("beforeunload", function () {
+      if (getPendingUid()) {
+        setLocalRegLocked();
+        setPendingUid("");
+      }
+    });
+
+    db.ref("admin_auth/registered").once("value").then(function (snap) {
+      if (snap.val() === true) {
+        remoteRegisteredFlag = true;
+        setLocalRegLocked();
+        if (!auth.currentUser) {
+          showAuthView("login");
+        }
+      }
+    }).catch(function () {});
+
+    auth.onAuthStateChanged(function (user) {
+      const pendingUid = getPendingUid();
+      if (user) {
+        if (pendingUid && pendingUid === user.uid && !isAnyRegLocked()) {
+          showAuthView("uid", user.uid);
+        } else {
+          showMainPanel();
+        }
+      } else {
+        if (pendingUid) {
+          setLocalRegLocked();
+          setPendingUid("");
+        }
+        if (!isAnyRegLocked()) {
+          showAuthView("register");
+        } else {
+          showAuthView("login");
+        }
+      }
+    });
+
+    function registerFirstAdmin() {
+      if (isAnyRegLocked()) {
+        showToast("Already registered! Please Login.");
+        showAuthView("login");
+        return;
+      }
+      const email = document.getElementById("regEmail").value.trim();
+      const pass = document.getElementById("regPassword").value;
+      if (!email || pass.length < 6) {
+        showToast("Valid email & 6+ char password required!");
+        return;
+      }
+      auth.createUserWithEmailAndPassword(email, pass)
+        .then(function (cred) {
+          const uid = cred.user.uid;
+          remoteRegisteredFlag = true;
+          setLocalRegLocked();
+          setPendingUid(uid);
+          db.ref("admin_auth").set({
+            registered: true,
+            admin_uid: uid,
+            created_at: Date.now()
+          }).catch(function () {});
+          showAuthView("uid", uid);
+          showToast("Registered! Copy your UID.");
+        })
+        .catch(function (err) {
+          if (err && err.code === "auth/email-already-in-use") {
+            remoteRegisteredFlag = true;
+            setLocalRegLocked();
+            setPendingUid("");
+            showAuthView("login");
+            showToast("Account exists! Please Login.");
+            return;
+          }
+          showToast(err.message || "Registration failed");
+        });
+    }
+
+    function copyCreatedUid() {
+      const uid = document.getElementById("createdUidText").textContent.trim();
+      if (!uid || uid === "-") return;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(uid).then(() => showToast("UID Copied!"));
+      } else {
+        const tmp = document.createElement("textarea");
+        tmp.value = uid;
+        document.body.appendChild(tmp);
+        tmp.select();
+        document.execCommand("copy");
+        document.body.removeChild(tmp);
+        showToast("UID Copied!");
+      }
+    }
+
+    function proceedToMainPanel() {
+      showMainPanel();
+    }
+
+    function loginAdmin() {
+      const email = document.getElementById("loginEmail").value.trim();
+      const pass = document.getElementById("loginPassword").value;
+      if (!email || !pass) {
+        showToast("Enter email & password!");
+        return;
+      }
+      auth.signInWithEmailAndPassword(email, pass)
+        .then(function () {
+          remoteRegisteredFlag = true;
+          setLocalRegLocked();
+          setPendingUid("");
+          showMainPanel();
+          showToast("Logged in!");
+        })
+        .catch(function (err) {
+          showToast(err.message || "Login failed");
+        });
+    }
+
+    function logoutAdmin() {
+      auth.signOut().then(function () {
+        setLocalRegLocked();
+        showToast("Logged out");
+        showAuthView("login");
+      });
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.add("open");
+      if (id === "brandModal") updateLogoPreview();
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove("open");
+    }
+
+    function switchPage(page, btn) {
+      document.querySelectorAll(".section").forEach(el => el.classList.remove("active"));
+      document.querySelectorAll(".nav-btn").forEach(el => el.classList.remove("active"));
+      document.getElementById("page-" + page).classList.add("active");
+      if (btn) btn.classList.add("active");
+    }
+
+    function updateLogoPreview() {
+      const url = document.getElementById("cfgLogoUrl").value.trim();
+      const prev = document.getElementById("modalLogoPreview");
+      const headImg = document.getElementById("headerLogoImg");
+      if (url) {
+        prev.src = url;
+        headImg.src = url;
+        headImg.classList.add("visible");
+      } else {
+        prev.removeAttribute("src");
+        headImg.removeAttribute("src");
+        headImg.classList.remove("visible");
+      }
+    }
+
+    function fmtDate(ms) {
+      if (!ms || Number(ms) <= 0) return "-";
+      return new Date(Number(ms)).toLocaleString();
+    }
+
+    function fmtDurationMs(ms) {
+      const val = Number(ms || 0);
+      if (val <= 0) return "0m";
+      const totalMins = Math.floor(val / 60000);
+      const hrs = Math.floor(totalMins / 60);
+      const days = Math.floor(hrs / 24);
+      if (days > 0) return days + "d " + (hrs % 24) + "h " + (totalMins % 60) + "m";
+      if (hrs > 0) return hrs + "h " + (totalMins % 60) + "m";
+      return totalMins + "m";
+    }
+
+    function fmtDiff(fromMs, toMs) {
+      if (!fromMs || !toMs) return "-";
+      const diff = Number(toMs) - Number(fromMs);
+      if (diff <= 0) return "0m";
+      return fmtDurationMs(diff);
+    }
+
+    function extractDevices(k, now) {
+      const list = [];
+      const rawDevices = k && k.devices && typeof k.devices === "object" ? k.devices : null;
+
+      if (rawDevices) {
+        Object.entries(rawDevices).forEach(([devId, d]) => {
+          if (!d || typeof d !== "object") return;
+          const devName = d.device_name || d.name || d.model || devId;
+          const ip = d.ip || d.ip_address || "-";
+          const version = d.app_version || d.version || "-";
+          const usedMs = Number(d.used_ms || (Number(d.used_seconds || 0) * 1000) || 0);
+          const lastSeen = Number(d.last_seen || 0);
+          const isOnline = (d.online === true) && lastSeen > 0 && ((now - lastSeen) <= ONLINE_WINDOW_MS);
+          list.push({
+            devId: devId,
+            name: String(devName),
+            ip: String(ip),
+            version: String(version),
+            usedMs: usedMs,
+            lastSeen: lastSeen,
+            online: isOnline
+          });
+        });
+      }
+
+      if (list.length === 0 && k && k.device_id && String(k.device_id).trim() !== "") {
+        const lastSeen = Number(k.last_seen || k.used_at || 0);
+        const isOnline = (k.online === true) && lastSeen > 0 && ((now - lastSeen) <= ONLINE_WINDOW_MS);
+        list.push({
+          devId: String(k.device_id),
+          name: String(k.device_name || k.device_id),
+          ip: String(k.ip || k.ip_address || "-"),
+          version: String(k.app_version || k.version || "-"),
+          usedMs: Number(k.used_ms || (Number(k.used_seconds || 0) * 1000) || 0),
+          lastSeen: lastSeen,
+          online: isOnline
+        });
+      }
+
+      return list;
+    }
+
+    function isKeyUsed(k, devs) {
+      return (devs && devs.length > 0) || Boolean(k && Number(k.used_at || 0) > 0);
+    }
+
+    function attachDatabaseListenersOnce() {
+      if (dbListenersAttached) return;
+      dbListenersAttached = true;
+
+      db.ref(".info/connected").on("value", snap => {
+        const el = document.getElementById("dbStatus");
+        if (snap.val() === true) {
+          el.textContent = "FIREBASE CONNECTED";
+          el.style.color = "#4cff88";
+          el.style.borderColor = "rgba(76, 255, 136, 0.45)";
+        } else {
+          el.textContent = "OFFLINE";
+          el.style.color = "#ff4d4d";
+          el.style.borderColor = "rgba(255, 69, 58, 0.45)";
+        }
+      });
+
+      db.ref("zerox_login").on("value", snap => {
+        const data = snap.val() || {};
+        const cfg = data.config || {};
+        const upd = data.update || {};
+        keysCache = data.keys || {};
+
+        document.getElementById("cfgLogoUrl").value = cfg.app_logo_url || "";
+        document.getElementById("cfgLogoText").value = cfg.app_logo_text || "ZEROX PANEL";
+        document.getElementById("cfgSubTitle").value = cfg.sub_title || "FREE FIRE MOD MENU";
+        document.getElementById("cfgTelegramUrl").value = cfg.telegram_url || "";
+        document.getElementById("cfgDeviceLock").checked = cfg.device_lock !== false;
+        document.getElementById("cfgAdsEnabled").checked = Boolean(cfg.ads_enabled);
+        document.getElementById("cfgAdsUrl").value = cfg.ads_url || "";
+        updateLogoPreview();
+
+        document.getElementById("updEnabled").checked = Boolean(upd.enabled);
+        document.getElementById("updForce").checked = upd.force_update !== false;
+        document.getElementById("updTitle").value = upd.title || "";
+        document.getElementById("updReason").value = upd.reason || "";
+        document.getElementById("updUrl").value = upd.update_url || "";
+
+        renderKeysAndHome();
+      }, err => showToast(err.message || "Rules blocked read"));
+
+      db.ref("zerox").on("value", snap => {
+        const data = snap.val() || {};
+        const cfg = data.config || {};
+        modsCache = data.floating_buttons || {};
+
+        document.getElementById("cfgDeveloper").value = cfg.developer || "DEV.ZEROXx";
+        if (cfg.app_logo_url && !document.getElementById("cfgLogoUrl").value) {
+          document.getElementById("cfgLogoUrl").value = cfg.app_logo_url;
+          updateLogoPreview();
+        }
+
+        document.getElementById("statTotalMods").textContent = Object.keys(modsCache).length;
+        renderModsList();
+      }, err => showToast(err.message || "Rules blocked read"));
+
+      setInterval(() => {
+        if (Object.keys(keysCache).length > 0) renderKeysAndHome();
+      }, 15000);
+    }
+
+    function renderDevicesHtml(code, devs) {
+      if (!devs || devs.length === 0) {
+        return `<div class="device-box"><span class="item-meta">No device used this key yet.</span></div>`;
+      }
+      const rows = devs.map(d => {
+        const statusTag = d.online
+          ? `<span class="tag on">ONLINE</span>`
+          : `<span class="tag off">OFFLINE</span>`;
+        const usedText = d.usedMs > 0 ? fmtDurationMs(d.usedMs) : "0m";
+        const lastSeenText = d.lastSeen > 0 ? fmtDate(d.lastSeen) : "-";
+        return `
+          <div class="device-line">
+            <div>
+              <b>Device:</b> ${escapeHtml(d.name)} ${statusTag}<br/>
+              <b>IP:</b> ${escapeHtml(d.ip)} | <b>Version:</b> ${escapeHtml(d.version)}<br/>
+              <b>Used Time:</b> ${escapeHtml(usedText)} | <b>Last Seen:</b> ${escapeHtml(lastSeenText)}
+            </div>
+            <button class="btn-sm danger" onclick="removeSingleDevice('${escapeAttr(code)}', '${escapeAttr(d.devId)}')">Remove</button>
+          </div>
+        `;
+      }).join("");
+      return `<div class="device-box">${rows}</div>`;
+    }
+
+    function renderKeysAndHome() {
+      const entries = Object.entries(keysCache);
+      const now = Date.now();
+      let totalKeys = entries.length;
+      let usedKeysCount = 0;
+      let onlineDevices = 0;
+
+      const usedEntries = [];
+
+      entries.forEach(([code, k]) => {
+        const devs = extractDevices(k || {}, now);
+        const used = isKeyUsed(k || {}, devs);
+        if (used) {
+          usedKeysCount++;
+          usedEntries.push([code, k || {}, devs]);
+        }
+        devs.forEach(d => { if (d.online) onlineDevices++; });
+      });
+
+      document.getElementById("statTotalKeys").textContent = totalKeys;
+      document.getElementById("statUsedKeys").textContent = usedKeysCount;
+      document.getElementById("statOnlineDevices").textContent = onlineDevices;
+
+      const keysListEl = document.getElementById("keysList");
+      const timingListEl = document.getElementById("homeTimingList");
+
+      if (entries.length === 0) {
+        keysListEl.innerHTML = '<div class="item-meta">No keys found.</div>';
+      } else {
+        keysListEl.innerHTML = entries.map(([code, k]) => {
+          const isValid = k.active !== false && Number(k.expire_at || 0) > now;
+          const devs = extractDevices(k || {}, now);
+          const maxDev = Math.max(1, Number(k.max_devices || 1));
+          const keyOnline = devs.some(d => d.online);
+          return `
+            <div class="item-row">
+              <div class="item-top">
+                <div class="item-title">${escapeHtml(code)}</div>
+                <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+                  <span class="tag info">DEV ${devs.length}/${maxDev}</span>
+                  <span class="tag ${keyOnline ? "on" : "off"}">${keyOnline ? "ONLINE" : "OFFLINE"}</span>
+                  <span class="tag ${isValid ? "on" : "off"}">${isValid ? "ACTIVE" : "EXPIRED/OFF"}</span>
+                </div>
+              </div>
+              <div class="item-meta">
+                User: <b>${escapeHtml(k.username || "-")}</b> | Max Devices: <b>${maxDev}</b><br/>
+                Created: ${fmtDate(k.created_at)} | Expires: ${fmtDate(k.expire_at)}
+              </div>
+              ${renderDevicesHtml(code, devs)}
+              <div class="item-actions">
+                <button class="btn-sm" onclick="editKey('${escapeAttr(code)}')">Edit</button>
+                <button class="btn-sm" onclick="toggleKeyActive('${escapeAttr(code)}', ${k.active !== false})">Toggle Active</button>
+                <button class="btn-sm" onclick="resetDeviceLock('${escapeAttr(code)}')">Reset All Devices</button>
+                <button class="btn-sm danger" onclick="deleteKey('${escapeAttr(code)}')">Delete</button>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      if (usedEntries.length === 0) {
+        timingListEl.innerHTML = '<div class="item-meta">No key has been used yet. Once a key is used, it will appear here.</div>';
+      } else {
+        timingListEl.innerHTML = usedEntries.map(([code, k, devs]) => {
+          const createdAt = Number(k.created_at || 0);
+          const usedAt = Number(k.used_at || 0);
+          const expireAt = Number(k.expire_at || 0);
+          const maxDev = Math.max(1, Number(k.max_devices || 1));
+          const usedAfterCreate = (createdAt && usedAt) ? fmtDiff(createdAt, usedAt) : "Just Used";
+          const leftTime = expireAt ? fmtDiff(now, expireAt) : "-";
+          const anyOnline = devs.some(d => d.online);
+          return `
+            <div class="item-row">
+              <div class="item-top">
+                <div class="item-title">${escapeHtml(code)} (${escapeHtml(k.username || "No User")})</div>
+                <div style="display:flex;gap:6px;">
+                  <span class="tag info">${devs.length}/${maxDev} Dev</span>
+                  <span class="tag ${anyOnline ? "on" : "off"}">${anyOnline ? "ONLINE" : "OFFLINE"}</span>
+                </div>
+              </div>
+              <div class="item-meta">
+                Created At: <b>${fmtDate(createdAt)}</b><br/>
+                First Used: <b>${usedAt ? fmtDate(usedAt) : "Active"}</b> (After create: <b>${usedAfterCreate}</b>)<br/>
+                Time Left: <b>${leftTime}</b>
+              </div>
+              ${renderDevicesHtml(code, devs)}
+            </div>
+          `;
+        }).join("");
+      }
+    }
+
+    function editKey(code) {
+      const k = keysCache[code];
+      if (!k) return;
+      document.getElementById("editingOriginalKey").value = code;
+      document.getElementById("keyInputCode").value = code;
+      document.getElementById("keyInputUser").value = k.username || "";
+      document.getElementById("keyMaxDevices").value = Math.max(1, Number(k.max_devices || 1));
+
+      const now = Date.now();
+      const remMs = Math.max(60000, Number(k.expire_at || (now + 86400000)) - now);
+      const remDays = Math.max(1, Math.round(remMs / 86400000));
+      document.getElementById("keyDurVal").value = remDays;
+      document.getElementById("keyDurUnit").value = "days";
+
+      showToast("Key loaded for edit!");
+      document.getElementById("keyInputCode").scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function clearKeyForm() {
+      document.getElementById("editingOriginalKey").value = "";
+      document.getElementById("keyInputCode").value = "";
+      document.getElementById("keyInputUser").value = "";
+      document.getElementById("keyDurVal").value = "7";
+      document.getElementById("keyDurUnit").value = "days";
+      document.getElementById("keyMaxDevices").value = "1";
+    }
+
+    function saveKey() {
+      const origCode = document.getElementById("editingOriginalKey").value.trim();
+      const code = document.getElementById("keyInputCode").value.trim();
+      const user = document.getElementById("keyInputUser").value.trim();
+      const val = Number(document.getElementById("keyDurVal").value || 1);
+      const unit = document.getElementById("keyDurUnit").value;
+      const maxDevices = Math.max(1, Number(document.getElementById("keyMaxDevices").value || 1));
+
+      if (!code) { showToast("Enter Key Code!"); return; }
+
+      let mult = 86400000;
+      if (unit === "minutes") mult = 60000;
+      if (unit === "hours") mult = 3600000;
+
+      const now = Date.now();
+      const expireAt = now + (val * mult);
+      const existing = keysCache[origCode || code] || {};
+
+      const payload = {
+        username: user,
+        active: existing.active !== undefined ? existing.active : true,
+        created_at: existing.created_at || now,
+        used_at: existing.used_at || 0,
+        expire_at: expireAt,
+        max_devices: maxDevices,
+        device_id: existing.device_id || "",
+        devices: existing.devices || {}
+      };
+
+      const writeOp = (origCode && origCode !== code)
+        ? db.ref("zerox_login/keys/" + code).set(payload).then(() => db.ref("zerox_login/keys/" + origCode).remove())
+        : db.ref("zerox_login/keys/" + code).set(payload);
+
+      writeOp.then(() => {
+        showToast(origCode ? "Key Updated!" : "Key Saved!");
+        clearKeyForm();
+      }).catch(e => showToast(e.message));
+    }
+
+    function toggleKeyActive(code, current) {
+      db.ref("zerox_login/keys/" + code + "/active").set(!current).then(() => showToast("Updated"));
+    }
+
+    function resetDeviceLock(code) {
+      Promise.all([
+        db.ref("zerox_login/keys/" + code + "/device_id").set(""),
+        db.ref("zerox_login/keys/" + code + "/devices").remove()
+      ]).then(() => showToast("All Devices Reset")).catch(e => showToast(e.message));
+    }
+
+    function removeSingleDevice(code, devId) {
+      db.ref("zerox_login/keys/" + code + "/devices/" + devId).remove()
+        .then(() => showToast("Device Removed"))
+        .catch(e => showToast(e.message));
+    }
+
+    function deleteKey(code) {
+      db.ref("zerox_login/keys/" + code).remove().then(() => {
+        if (document.getElementById("editingOriginalKey").value === code) clearKeyForm();
+        showToast("Key Deleted");
+      });
+    }
+
+    function saveModButton() {
+      const id = document.getElementById("modId").value.trim();
+      const name = document.getElementById("modName").value.trim();
+      const rawUrl = document.getElementById("modRawUrl").value.trim();
+      const targetPath = document.getElementById("modTargetPath").value.trim();
+      const deleteFiles = document.getElementById("modDeleteFiles").value.trim();
+
+      if (!id || !name) { showToast("Button ID & Name required!"); return; }
+
+      db.ref("zerox/floating_buttons/" + id).set({
+        name: name,
+        raw_url: rawUrl,
+        target_path: targetPath,
+        delete_files: deleteFiles
+      }).then(() => showToast("Floating Button Saved!")).catch(e => showToast(e.message));
+    }
+
+    function renderModsList() {
+      const el = document.getElementById("modsList");
+      const entries = Object.entries(modsCache);
+      if (entries.length === 0) {
+        el.innerHTML = '<div class="item-meta">No floating buttons added yet.</div>';
+        return;
+      }
+      el.innerHTML = entries.map(([id, m]) => `
+        <div class="item-row">
+          <div class="item-top">
+            <div class="item-title">${escapeHtml(m.name || id)} <span style="color:var(--neon);font-size:12px;">(${escapeHtml(id)})</span></div>
+          </div>
+          <div class="item-meta">
+            Raw: ${escapeHtml(m.raw_url || "-")}<br/>
+            Target: ${escapeHtml(m.target_path || "-")}<br/>
+            Delete on OFF: ${escapeHtml(m.delete_files || "-")}
+          </div>
+          <div class="item-actions">
+            <button class="btn-sm" onclick="fillModForm('${escapeAttr(id)}')">Edit</button>
+            <button class="btn-sm danger" onclick="deleteModButton('${escapeAttr(id)}')">Delete</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function fillModForm(id) {
+      const m = modsCache[id];
+      if (!m) return;
+      document.getElementById("modId").value = id;
+      document.getElementById("modName").value = m.name || "";
+      document.getElementById("modRawUrl").value = m.raw_url || "";
+      document.getElementById("modTargetPath").value = m.target_path || "";
+      document.getElementById("modDeleteFiles").value = m.delete_files || "";
+      showToast("Loaded into form");
+    }
+
+    function deleteModButton(id) {
+      db.ref("zerox/floating_buttons/" + id).remove().then(() => showToast("Mod Button Deleted"));
+    }
+
+    function saveUpdateConfig() {
+      db.ref("zerox_login/update").set({
+        enabled: document.getElementById("updEnabled").checked,
+        force_update: document.getElementById("updForce").checked,
+        title: document.getElementById("updTitle").value.trim(),
+        reason: document.getElementById("updReason").value.trim(),
+        update_url: document.getElementById("updUrl").value.trim()
+      }).then(() => showToast("Update Settings Saved!")).catch(e => showToast(e.message));
+    }
+
+    function saveBrandPopup() {
+      const logoUrl = document.getElementById("cfgLogoUrl").value.trim();
+      const logo = document.getElementById("cfgLogoText").value.trim() || "ZEROX PANEL";
+      const sub = document.getElementById("cfgSubTitle").value.trim() || "FREE FIRE MOD MENU";
+      const dev = document.getElementById("cfgDeveloper").value.trim() || "DEV.ZEROXx";
+      const devLock = document.getElementById("cfgDeviceLock").checked;
+
+      Promise.all([
+        db.ref("zerox_login/config/app_logo_url").set(logoUrl),
+        db.ref("zerox_login/config/app_logo_text").set(logo),
+        db.ref("zerox_login/config/sub_title").set(sub),
+        db.ref("zerox_login/config/device_lock").set(devLock),
+        db.ref("zerox/config/app_logo_url").set(logoUrl),
+        db.ref("zerox/config/app_logo_text").set(logo),
+        db.ref("zerox/config/developer").set(dev)
+      ]).then(() => {
+        updateLogoPreview();
+        showToast("Logo & Brand Saved!");
+        closeModal("brandModal");
+      }).catch(e => showToast(e.message));
+    }
+
+    function saveAdsPopup() {
+      const adsEnabled = document.getElementById("cfgAdsEnabled").checked;
+      const adsUrl = document.getElementById("cfgAdsUrl").value.trim();
+      const tgUrl = document.getElementById("cfgTelegramUrl").value.trim();
+
+      Promise.all([
+        db.ref("zerox_login/config/ads_enabled").set(adsEnabled),
+        db.ref("zerox_login/config/ads_url").set(adsUrl),
+        db.ref("zerox_login/config/telegram_url").set(tgUrl)
+      ]).then(() => {
+        showToast("Ads & Links Saved!");
+        closeModal("adsModal");
+      }).catch(e => showToast(e.message));
+    }
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function escapeAttr(str) {
+      return String(str || "").replace(/'/g, "\\'");
+    }
+  </script>
+</body>
+</html>
